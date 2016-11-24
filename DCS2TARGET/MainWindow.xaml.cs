@@ -40,6 +40,7 @@ namespace DCS2TARGET
             openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             if (openFileDialog.ShowDialog() == true)
             {
+                ////Refactor to its own class
                 //read the html and creat macros
                 macros = new List<TargetKeyMacro>();
                 doc = new HtmlDocument();
@@ -80,7 +81,8 @@ namespace DCS2TARGET
                         commands.Add(macro.Category, category);
                     }
                 }
-                StringWriter printWriter = new StringWriter();
+                //change this to some sort of file writer
+                TextWriter printWriter = new StringWriter();
                 printWriter.Write("//Created by DCS2Target\n\n\n");
                 printWriter.Write("include \"usbkeys.ttm\"\n\n\n");
 
@@ -90,21 +92,15 @@ namespace DCS2TARGET
                     foreach(KeyValuePair<string,string> command in category.Value)
                     {
                         string name = string.Format("define {0}", command.Key);
-
+                        if (command.Value == "")
+                            name = "//" + name;
 
                         printWriter.Write("{0} {1}\n", name.PadRight(padSize + "define".Length + 10 ), command.Value);
                     }
                 }
-                //for (Map.Entry<String, HashMap<String, String>> entry:commands.entrySet())
-                //{
-                //    printWriter.printf("\n//%s\n\n", entry.getKey());
-                //    HashMap<String, String> categoryCommands = entry.getValue();
-                //    for (Map.Entry<String, String> command:categoryCommands.entrySet())
-                //    {
-                //        printWriter.printf("define %-50s\t%-40s\n", command.getKey(), command.getValue());
-                //    }
-                //}
+
                 txtEditor.Text = printWriter.ToString();
+                ////End of Refactor to its own class
             }
             
         }
