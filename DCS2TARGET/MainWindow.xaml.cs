@@ -3,18 +3,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DCS2TARGET
 {
@@ -32,7 +21,7 @@ namespace DCS2TARGET
 
         private void btnOpenFile_Click(object sender, RoutedEventArgs e)
         {
-            
+
             HtmlDocument doc;
             List<TargetKeyMacro> macros;
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -61,19 +50,19 @@ namespace DCS2TARGET
                             macro.Name = name;
                             macro.Command = HtmlEntity.DeEntitize(tds[0].InnerText);
                             macros.Add(macro);
-                            
+
                         }
                     }
                 }
                 // format for writing
-                Dictionary<string,Dictionary<string, string>> commands = new Dictionary<string,Dictionary<string, string>>();
+                Dictionary<string, Dictionary<string, string>> commands = new Dictionary<string, Dictionary<string, string>>();
                 // build categories
                 foreach (TargetKeyMacro macro in macros)
                 {
                     if (commands.ContainsKey(macro.Category))
                     {
                         Dictionary<String, String> category = commands[macro.Category];
-                        category[macro.Name] =  macro.Command;
+                        category[macro.Name] = macro.Command;
                     }
                     else
                     {
@@ -86,23 +75,24 @@ namespace DCS2TARGET
                 printWriter.Write("//Created by DCS2Target\n\n\n");
                 printWriter.Write("include \"usbkeys.ttm\"\n\n\n");
 
-                foreach (KeyValuePair<string,Dictionary<string,string>> category in commands)
+                foreach (KeyValuePair<string, Dictionary<string, string>> category in commands)
                 {
-                    printWriter.Write("\n//{0}\n\n",category.Key);
-                    foreach(KeyValuePair<string,string> command in category.Value)
+                    printWriter.Write("\n//{0}\n\n", category.Key);
+                    foreach (KeyValuePair<string, string> command in category.Value)
                     {
                         string name = string.Format("define {0}", command.Key);
+
                         if (command.Value == "")
                             name = "//" + name;
 
-                        printWriter.Write("{0} {1}\n", name.PadRight(padSize + "define".Length + 10 ), command.Value);
+                        printWriter.Write("{0} {1}\n", name.PadRight(padSize + "define".Length + 10), command.Value);
                     }
                 }
 
                 txtEditor.Text = printWriter.ToString();
                 ////End of Refactor to its own class
             }
-            
+
         }
     }
 }
